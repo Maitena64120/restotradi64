@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css"><link rel="stylesheet" href="css/L.Control.Locate.min.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/MarkerCluster.css">
+        <link rel="stylesheet" href="css/MarkerCluster.Default.css">
+        <style>
+        #map {
+            width: 1014px;
+            height: 501px;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script><script src="js/L.Control.Locate.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet.markercluster.js"></script>
+        <script src="data/communes64_0.js"></script>
+        <script src="data/restotradi_1.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+            highlightLayer.openPopup();
+        }
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[42.715898157781886,-1.8362250405961533],[43.65844194638684,0.07530665092329292]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        function pop_communes64_0(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['nom_sdsei'] !== null ? Autolinker.link(feature.properties['nom_sdsei'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['nom'] !== null ? Autolinker.link(feature.properties['nom'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['fg_montagne'] !== null ? Autolinker.link(feature.properties['fg_montagne'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['code_postal'] !== null ? Autolinker.link(feature.properties['code_postal'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['cons_dptal'] !== null ? Autolinker.link(feature.properties['cons_dptal'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['cons_dptale'] !== null ? Autolinker.link(feature.properties['cons_dptale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['nom_utd'] !== null ? Autolinker.link(feature.properties['nom_utd'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['statut'] !== null ? Autolinker.link(feature.properties['statut'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['code_insee'] !== null ? Autolinker.link(feature.properties['code_insee'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['photo'] !== null ? Autolinker.link(feature.properties['photo'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['epci'] !== null ? Autolinker.link(feature.properties['epci'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['nom_canton'] !== null ? Autolinker.link(feature.properties['nom_canton'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['popul'] !== null ? Autolinker.link(feature.properties['popul'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_communes64_0_0() {
+            return {
+                pane: 'pane_communes64_0',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,253,253,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_communes64_0');
+        map.getPane('pane_communes64_0').style.zIndex = 400;
+        map.getPane('pane_communes64_0').style['mix-blend-mode'] = 'normal';
+        var layer_communes64_0 = new L.geoJson(json_communes64_0, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_communes64_0',
+            layerName: 'layer_communes64_0',
+            pane: 'pane_communes64_0',
+            onEachFeature: pop_communes64_0,
+            style: style_communes64_0_0,
+        });
+        bounds_group.addLayer(layer_communes64_0);
+        map.addLayer(layer_communes64_0);
+        function pop_restotradi_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['siretsiegeunitelegale'] !== null ? Autolinker.link(feature.properties['siretsiegeunitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['geolocetablissement'] !== null ? Autolinker.link(feature.properties['geolocetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['soussectionetablissement'] !== null ? Autolinker.link(feature.properties['soussectionetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['trancheeffectifsunitelegale'] !== null ? Autolinker.link(feature.properties['trancheeffectifsunitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['activiteprincipaleunitelegale'] !== null ? Autolinker.link(feature.properties['activiteprincipaleunitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['sexeunitelegale'] !== null ? Autolinker.link(feature.properties['sexeunitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['nomunitelegale'] !== null ? Autolinker.link(feature.properties['nomunitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['caractereemployeurunitelegale'] !== null ? Autolinker.link(feature.properties['caractereemployeurunitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['denominationusuelle1unitelegale'] !== null ? Autolinker.link(feature.properties['denominationusuelle1unitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['classeetablissement'] !== null ? Autolinker.link(feature.properties['classeetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['l1_adressage_unitelegale'] !== null ? Autolinker.link(feature.properties['l1_adressage_unitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['prenomusuelunitelegale'] !== null ? Autolinker.link(feature.properties['prenomusuelunitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['prenom1unitelegale'] !== null ? Autolinker.link(feature.properties['prenom1unitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['activiteprincipaleetablissement'] !== null ? Autolinker.link(feature.properties['activiteprincipaleetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['datederniertraitementetablissement'] !== null ? Autolinker.link(feature.properties['datederniertraitementetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['populationcommuneetablissement'] !== null ? Autolinker.link(feature.properties['populationcommuneetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['siren'] !== null ? Autolinker.link(feature.properties['siren'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['naturejuridiqueunitelegale'] !== null ? Autolinker.link(feature.properties['naturejuridiqueunitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['superficiecommuneetablissement'] !== null ? Autolinker.link(feature.properties['superficiecommuneetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['statutdiffusionunitelegale'] !== null ? Autolinker.link(feature.properties['statutdiffusionunitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['groupeunitelegale'] !== null ? Autolinker.link(feature.properties['groupeunitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['datedebutunitelegale'] !== null ? Autolinker.link(feature.properties['datedebutunitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['nomenclatureactiviteprincipaleetablissement'] !== null ? Autolinker.link(feature.properties['nomenclatureactiviteprincipaleetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['filename'] !== null ? Autolinker.link(feature.properties['filename'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['soussectionunitelegale'] !== null ? Autolinker.link(feature.properties['soussectionunitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['divisionunitelegale'] !== null ? Autolinker.link(feature.properties['divisionunitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['nombreperiodesetablissement'] !== null ? Autolinker.link(feature.properties['nombreperiodesetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['sectionunitelegale'] !== null ? Autolinker.link(feature.properties['sectionunitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['sectionetablissement'] !== null ? Autolinker.link(feature.properties['sectionetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['siret'] !== null ? Autolinker.link(feature.properties['siret'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['nicsiegeunitelegale'] !== null ? Autolinker.link(feature.properties['nicsiegeunitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['etatadministratifetablissement'] !== null ? Autolinker.link(feature.properties['etatadministratifetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['groupeetablissement'] !== null ? Autolinker.link(feature.properties['groupeetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['datecreationunitelegale'] !== null ? Autolinker.link(feature.properties['datecreationunitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['codearrondissementetablissement'] !== null ? Autolinker.link(feature.properties['codearrondissementetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['departementetablissement'] !== null ? Autolinker.link(feature.properties['departementetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['nic'] !== null ? Autolinker.link(feature.properties['nic'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['etatadministratifunitelegale'] !== null ? Autolinker.link(feature.properties['etatadministratifunitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['categorieentreprise'] !== null ? Autolinker.link(feature.properties['categorieentreprise'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['categoriejuridiqueunitelegale'] !== null ? Autolinker.link(feature.properties['categoriejuridiqueunitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['altitudemoyennecommuneetablissement'] !== null ? Autolinker.link(feature.properties['altitudemoyennecommuneetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['codeepcietablissement'] !== null ? Autolinker.link(feature.properties['codeepcietablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['etablissementsiege'] !== null ? Autolinker.link(feature.properties['etablissementsiege'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['codecommuneetablissement'] !== null ? Autolinker.link(feature.properties['codecommuneetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['regionetablissement'] !== null ? Autolinker.link(feature.properties['regionetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['nombreperiodesunitelegale'] !== null ? Autolinker.link(feature.properties['nombreperiodesunitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['nomenclatureactiviteprincipaleunitelegale'] !== null ? Autolinker.link(feature.properties['nomenclatureactiviteprincipaleunitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['coderegionetablissement'] !== null ? Autolinker.link(feature.properties['coderegionetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['datecreationetablissement'] !== null ? Autolinker.link(feature.properties['datecreationetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['caractereemployeuretablissement'] !== null ? Autolinker.link(feature.properties['caractereemployeuretablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['divisionetablissement'] !== null ? Autolinker.link(feature.properties['divisionetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['epcietablissement'] !== null ? Autolinker.link(feature.properties['epcietablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['libellecommuneetablissement'] !== null ? Autolinker.link(feature.properties['libellecommuneetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['anneecategorieentreprise'] !== null ? Autolinker.link(feature.properties['anneecategorieentreprise'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['statutdiffusionetablissement'] !== null ? Autolinker.link(feature.properties['statutdiffusionetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['codepostaletablissement'] !== null ? Autolinker.link(feature.properties['codepostaletablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['datederniertraitementunitelegale'] !== null ? Autolinker.link(feature.properties['datederniertraitementunitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['datedebutetablissement'] !== null ? Autolinker.link(feature.properties['datedebutetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['classeunitelegale'] !== null ? Autolinker.link(feature.properties['classeunitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['codedepartementetablissement'] !== null ? Autolinker.link(feature.properties['codedepartementetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['trancheeffectifsetablissement'] !== null ? Autolinker.link(feature.properties['trancheeffectifsetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['enseigne1etablissement'] !== null ? Autolinker.link(feature.properties['enseigne1etablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['denominationusuelleetablissement'] !== null ? Autolinker.link(feature.properties['denominationusuelleetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['adresseetablissement'] !== null ? Autolinker.link(feature.properties['adresseetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['denominationunitelegale'] !== null ? Autolinker.link(feature.properties['denominationunitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['numerovoieetablissement'] !== null ? Autolinker.link(feature.properties['numerovoieetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['typevoieetablissement'] !== null ? Autolinker.link(feature.properties['typevoieetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['libellevoieetablissement'] !== null ? Autolinker.link(feature.properties['libellevoieetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['anneeeffectifsetablissement'] !== null ? Autolinker.link(feature.properties['anneeeffectifsetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['anneeeffectifsunitelegale'] !== null ? Autolinker.link(feature.properties['anneeeffectifsunitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['complementadresseetablissement'] !== null ? Autolinker.link(feature.properties['complementadresseetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['indicerepetitionetablissement'] !== null ? Autolinker.link(feature.properties['indicerepetitionetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['datefermetureetablissement'] !== null ? Autolinker.link(feature.properties['datefermetureetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['economiesocialesolidaireunitelegale'] !== null ? Autolinker.link(feature.properties['economiesocialesolidaireunitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['datefermetureunitelegale'] !== null ? Autolinker.link(feature.properties['datefermetureunitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['activiteprincipaleregistremetiersetablissement'] !== null ? Autolinker.link(feature.properties['activiteprincipaleregistremetiersetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['nomusageunitelegale'] !== null ? Autolinker.link(feature.properties['nomusageunitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['prenom2unitelegale'] !== null ? Autolinker.link(feature.properties['prenom2unitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['prenom3unitelegale'] !== null ? Autolinker.link(feature.properties['prenom3unitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['enseigne2etablissement'] !== null ? Autolinker.link(feature.properties['enseigne2etablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['codepostal2etablissement'] !== null ? Autolinker.link(feature.properties['codepostal2etablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['libellecommune2etablissement'] !== null ? Autolinker.link(feature.properties['libellecommune2etablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['typevoie2etablissement'] !== null ? Autolinker.link(feature.properties['typevoie2etablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['numerovoie2etablissement'] !== null ? Autolinker.link(feature.properties['numerovoie2etablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['libellevoie2etablissement'] !== null ? Autolinker.link(feature.properties['libellevoie2etablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['codecommune2etablissement'] !== null ? Autolinker.link(feature.properties['codecommune2etablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['sigleunitelegale'] !== null ? Autolinker.link(feature.properties['sigleunitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['identifiantassociationunitelegale'] !== null ? Autolinker.link(feature.properties['identifiantassociationunitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['prenom4unitelegale'] !== null ? Autolinker.link(feature.properties['prenom4unitelegale'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['codecedexetablissement'] !== null ? Autolinker.link(feature.properties['codecedexetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['distributionspecialeetablissement'] !== null ? Autolinker.link(feature.properties['distributionspecialeetablissement'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_restotradi_1_0() {
+            return {
+                pane: 'pane_restotradi_1',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(128,17,25,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(210,5,22,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_restotradi_1');
+        map.getPane('pane_restotradi_1').style.zIndex = 401;
+        map.getPane('pane_restotradi_1').style['mix-blend-mode'] = 'normal';
+        var layer_restotradi_1 = new L.geoJson(json_restotradi_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_restotradi_1',
+            layerName: 'layer_restotradi_1',
+            pane: 'pane_restotradi_1',
+            onEachFeature: pop_restotradi_1,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_restotradi_1_0(feature));
+            },
+        });
+        var cluster_restotradi_1 = new L.MarkerClusterGroup({showCoverageOnHover: false,
+            spiderfyDistanceMultiplier: 2});
+        cluster_restotradi_1.addLayer(layer_restotradi_1);
+
+        bounds_group.addLayer(layer_restotradi_1);
+        cluster_restotradi_1.addTo(map);
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'<img src="legend/restotradi_1.png" /> restotradi': cluster_restotradi_1,'<img src="legend/communes64_0.png" /> communes64': layer_communes64_0,}).addTo(map);
+        setBounds();
+        </script>
+    </body>
+</html>
